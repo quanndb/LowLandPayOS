@@ -21,6 +21,10 @@ app.use(express.urlencoded({ extended: true }));
 
 const DOMAIN = CLIENT_HOST;
 
+app.post("/", async (req, res) => {
+  res.send("Lowland pay server");
+});
+
 app.post("/create-payment-link", async (req, res) => {
   try {
     const order = {
