@@ -44,9 +44,14 @@ app.post("/create-payment-link", async (req, res) => {
 });
 
 app.post("/receive-hook", async (req, res) => {
-  const webhookData = payos.verifyPaymentWebhookData(req.body);
-  console.log(webhookData);
-  res.json();
+  try {
+    const webhookData = payos.verifyPaymentWebhookData(req.body);
+    console.log(webhookData);
+    res.json();
+  } catch (error) {
+    res.status(400);
+    res.send("Error");
+  }
 });
 
 app.post("/cancel-payment", async (req, res) => {
