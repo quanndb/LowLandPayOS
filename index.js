@@ -1,23 +1,25 @@
 const express = require("express");
 const cors = require("cors");
 const PayOS = require("@payos/node");
+require("dotenv").config();
+
+const CLIENT_ID = process.env.CLIENT_ID;
+const API_KEY = process.env.API_KEY;
+const CHECKSUM_KEY = process.env.CHECKSUM_KEY;
+const CLIENT_HOST = process.env.CLIENT_HOST;
 
 const app = express();
 
 const port = 3000;
 
-const payos = new PayOS(
-  "6d09642c-91fb-4643-ac10-99aacc99381e",
-  "02b6746a-517a-4bd9-8e4e-65e83890af50",
-  "a4b21d36582902f56af34fafe75550e28be29099891168b8ba6b05fc00e4e852"
-);
+const payos = new PayOS(CLIENT_ID, API_KEY, CHECKSUM_KEY);
 
 app.use(cors());
 app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const DOMAIN = "http://localhost:5173";
+const DOMAIN = CLIENT_HOST;
 
 app.post("/create-payment-link", async (req, res) => {
   try {
