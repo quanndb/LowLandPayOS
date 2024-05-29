@@ -20,19 +20,39 @@ app.use(express.urlencoded({ extended: true }));
 const DOMAIN = "http://localhost:5173";
 
 app.post("/create-payment-link", async (req, res) => {
-  const order = {
-    description: "LowLand thanh toan",
-    returnUrl: `${DOMAIN}/payment-success`,
-    cancelUrl: `${DOMAIN}/payment-cancel`,
-  };
-  order.amount = req.body.amount;
-  order.orderCode = req.body.orderCode;
-  const paymentLink = await payos.createPaymentLink(order);
-  res.redirect(303, paymentLink.checkoutUrl);
+  try {
+    const order = {
+      description: "LowLand thanh toan",
+      returnUrl: `${DOMAIN}/`,
+      cancelUrl: `${DOMAIN}/payment-cancel`,
+    };
+    order.amount = req.body.amount;
+    order.orderCode = req.body.orderCode;
+    order.items = req.body.items;
+    const paymentLink = await payos.createPaymentLink(order);
+    res.send(paymentLink.checkoutUrl);
+  } catch (error) {
+    res.status(400);
+    res.send("Error");
+  }
 });
 
 app.post("/receive-hook", async (req, res) => {
-  res.json(req);
+  console.log(req);
+  res.json();
+});
+
+app.post("/cancel-payment", async (req, res) => {
+  try {
+    const cancelledPaymentLink = await payos.cancelPaymentLink(
+      req.body.orderCode,
+      req.body.reason
+    );
+    res.send(cancelledPaymentLink);
+  } catch (error) {
+    res.status(400);
+    res.send("Error");
+  }
 });
 
 app.listen(port, () => {
