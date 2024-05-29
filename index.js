@@ -21,6 +21,11 @@ app.use(express.urlencoded({ extended: true }));
 
 const DOMAIN = CLIENT_HOST;
 
+const resObj = {
+  code: 2000,
+  message: "Verified",
+};
+
 app.post("/", async (req, res) => {
   res.send("Lowland pay server");
 });
@@ -46,11 +51,14 @@ app.post("/create-payment-link", async (req, res) => {
 app.post("/receive-hook", async (req, res) => {
   try {
     const webhookData = payos.verifyPaymentWebhookData(req.body);
-    console.log(webhookData);
-    res.json();
+    resObj.code = 2000;
+    resObj.message = webhookData;
+    res.send(resObj);
   } catch (error) {
     res.status(400);
-    res.send("Error");
+    resObj.code = 4000;
+    resObj.message = "Invalid payment";
+    res.send(resObj);
   }
 });
 
