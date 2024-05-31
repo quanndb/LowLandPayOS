@@ -26,10 +26,6 @@ const resObj = {
   message: "Verified",
 };
 
-app.post("/", async (req, res) => {
-  res.send("Lowland pay server");
-});
-
 app.post("/create-payment-link", async (req, res) => {
   try {
     const order = {
@@ -41,14 +37,18 @@ app.post("/create-payment-link", async (req, res) => {
     order.orderCode = req.body.orderCode;
     order.items = req.body.items;
     const paymentLink = await payos.createPaymentLink(order);
-    res.send(paymentLink.checkoutUrl);
+    resObj.code = 2000;
+    resObj.message = paymentLink.checkoutUrl;
+    res.send(resObj);
   } catch (error) {
     res.status(400);
-    res.send("Error");
+    resObj.code = 4000;
+    resObj.message = "Error";
+    res.send(resObj);
   }
 });
 
-app.post("/receive-hook", async (req, res) => {
+app.post("/verify-payment", async (req, res) => {
   try {
     const webhookData = payos.verifyPaymentWebhookData(req.body);
     resObj.code = 2000;
@@ -68,10 +68,14 @@ app.post("/cancel-payment", async (req, res) => {
       req.body.orderCode,
       req.body.reason
     );
-    res.send(cancelledPaymentLink);
+    resObj.code = 2000;
+    resObj.message = cancelledPaymentLink;
+    res.send(resObj);
   } catch (error) {
     res.status(400);
-    res.send("Error");
+    resObj.code = 4000;
+    resObj.message = "Error";
+    res.send(resObj);
   }
 });
 
