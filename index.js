@@ -23,7 +23,7 @@ const DOMAIN = CLIENT_HOST;
 
 const resObj = {
   code: 2000,
-  message: "Verified",
+  result: "Verified",
 };
 
 app.post("/create-payment-link", async (req, res) => {
@@ -38,12 +38,12 @@ app.post("/create-payment-link", async (req, res) => {
     order.items = req.body.items;
     const paymentLink = await payos.createPaymentLink(order);
     resObj.code = 2000;
-    resObj.message = paymentLink.checkoutUrl;
+    resObj.result = paymentLink.checkoutUrl;
     res.send(resObj);
   } catch (error) {
     res.status(400);
     resObj.code = 4000;
-    resObj.message = "Error";
+    resObj.result = "Error";
     res.send(resObj);
   }
 });
@@ -52,12 +52,12 @@ app.post("/verify-payment", async (req, res) => {
   try {
     const webhookData = payos.verifyPaymentWebhookData(req.body);
     resObj.code = 2000;
-    resObj.message = webhookData;
+    resObj.result = webhookData;
     res.send(resObj);
   } catch (error) {
     res.status(400);
     resObj.code = 4000;
-    resObj.message = "Invalid payment";
+    resObj.result = "Invalid payment";
     res.send(resObj);
   }
 });
@@ -69,12 +69,12 @@ app.post("/cancel-payment", async (req, res) => {
       req.body.reason
     );
     resObj.code = 2000;
-    resObj.message = cancelledPaymentLink;
+    resObj.result = cancelledPaymentLink;
     res.send(resObj);
   } catch (error) {
     res.status(400);
     resObj.code = 4000;
-    resObj.message = "Error";
+    resObj.result = "Error";
     res.send(resObj);
   }
 });
