@@ -49,6 +49,7 @@ app.post("/create-payment-link", async (req, res) => {
 });
 
 app.post("/verify-payment", async (req, res) => {
+  console.log(req.body);
   try {
     const webhookData = payos.verifyPaymentWebhookData(req.body);
     resObj.code = 2000;
