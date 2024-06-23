@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const axios = require("axios");
 const PayOS = require("@payos/node");
 require("dotenv").config();
 
@@ -7,6 +8,7 @@ const CLIENT_ID = process.env.CLIENT_ID;
 const API_KEY = process.env.API_KEY;
 const CHECKSUM_KEY = process.env.CHECKSUM_KEY;
 const CLIENT_HOST = process.env.CLIENT_HOST;
+const BACK_END = process.env.BACK_END;
 
 const app = express();
 
@@ -46,6 +48,20 @@ app.post("/create-payment-link", async (req, res) => {
     resObj.result = "Error";
     res.send(resObj);
   }
+});
+
+app.post("/receive-payment", async (req, res) => {
+  console.log(req.body);
+  axios
+    .post(BACK_END, req.body)
+    .then((response) => {
+      console.log(response);
+      res.send(response.data);
+    })
+    .catch(function (error) {
+      console.log(error);
+      res.send(error);
+    });
 });
 
 app.post("/verify-payment", async (req, res) => {
